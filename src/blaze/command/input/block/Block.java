@@ -27,6 +27,7 @@ public abstract class Block {
     public abstract void fromJson(JsonObject object);
     public static Block constructFromJson(JsonObject object) {
         JsonElement type = object.get("type");
+        JsonElement loop = object.get("loop");
         String typeName;
         String className;
 
@@ -34,7 +35,7 @@ public abstract class Block {
             throw new JsonException("Block: type must be present");
         if (JsonHelper.checkElement(type, JsonHelper.JSONType.STRING)) {
             typeName = type.getAsString() + "Block";
-            className = LiteralBlock.class.getPackageName() + "." + typeName;
+            className = Block.class.getPackageName() + "." + typeName;
         } else if (JsonHelper.checkElement(type, JsonHelper.JSONType.OBJECT)) {
             JsonObject blockObject = type.getAsJsonObject();
             JsonElement name = blockObject.get("name");
@@ -63,6 +64,11 @@ public abstract class Block {
             if (Block.class.isAssignableFrom(literalClass)) {
                 Block block = (Block) literalClass.getConstructor().newInstance();
                 block.fromJson(object);
+                if (loop != null) {
+                    if (JsonHelper.checkElement(loop, JsonHelper.JSONType.BOOLEAN)) {
+                        block.setLoop(loop.getAsBoolean());
+                    }
+                }
                 return block;
             }
             else

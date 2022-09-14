@@ -17,6 +17,8 @@ public class SubcommandBlock extends Block {
     private String subcommandName;
     private ArrayList<Block> body = new ArrayList<>();
 
+    public SubcommandBlock() {}
+
     public SubcommandBlock(String name) {
         subcommandName = name;
     }
@@ -67,18 +69,13 @@ public class SubcommandBlock extends Block {
     @Override
     public void fromJson(JsonObject object) {
         JsonElement body = object.get("body");
-        JsonElement loop = object.get("loop");
+        JsonElement name = object.get("name");
         JsonObject block;
 
         if (body == null)
             throw new JsonException(this.getClass().getSimpleName() + ": body must be present");
-        if (loop != null) {
-            if (JsonHelper.checkElement(loop, JsonHelper.JSONType.BOOLEAN)) {
-                //this.keyword = keyword.getAsString();
-            } else {
-                throw new JsonException(this.getClass().getSimpleName() + ": loop must be a Boolean");
-            }
-        }
+        if (name == null)
+            throw new JsonException(this.getClass().getSimpleName() + ": name must be present");
         if (JsonHelper.checkElement(body, JsonHelper.JSONType.ARRAY)) {
             JsonArray array = body.getAsJsonArray();
             for (JsonElement elt: array) {
@@ -91,6 +88,11 @@ public class SubcommandBlock extends Block {
             }
         } else {
             throw new JsonException(this.getClass().getSimpleName() + ": body must be an Array");
+        }
+        if (JsonHelper.checkElement(name, JsonHelper.JSONType.STRING)) {
+            this.subcommandName = name.getAsString();
+        } else {
+            throw new JsonException(this.getClass().getSimpleName() + ": name must be a String");
         }
     }
 

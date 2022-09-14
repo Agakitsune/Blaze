@@ -1,5 +1,7 @@
 package src.blaze.command;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import src.blaze.command.exception.CommandException;
 import src.blaze.command.input.Input;
@@ -8,6 +10,11 @@ import src.blaze.command.input.Token;
 import src.blaze.command.input.block.Block;
 import src.blaze.command.input.block.BlockResponse;
 import src.blaze.command.input.node.CommandNode;
+import src.blaze.entity.exception.EntityException;
+import src.blaze.entity.factory.EntityFactory;
+import src.blaze.entity.factory.FactoryStorage;
+import src.blaze.utils.JsonHelper;
+import src.blaze.utils.exception.JsonException;
 
 import java.util.ArrayList;
 
@@ -71,5 +78,27 @@ public class CommandTemplate {
         if (shift < input.getTokensNumber())
             throw new SyntaxException("Unexpected " + input.getToken(shift).type() + " '" + input.getToken(shift).value() + "' at " + input.getToken(shift).position());
         return cmd;
+    }
+
+    public void useFile(String file) {
+        JsonObject object = JsonHelper.deserialize(file, JsonObject.class);
+        JsonElement body = object.get("body");
+        JsonObject block;
+
+        if (body == null) {
+            throw new JsonException(this.getClass().getSimpleName() + ": body must be present");
+        } else {
+            if (!JsonHelper.checkElement(body, JsonHelper.JSONType.ARRAY))
+                throw new JsonException(this.getClass().getSimpleName() + ": body must be an Array");
+            JsonArray array = body.getAsJsonArray();
+            for (JsonElement elt: array) {
+                if (JsonHelper.checkElement(elt, JsonHelper.JSONType.OBJECT)) {
+                    block = elt.getAsJsonObject();
+                    this.body.add(Block.constructFromJson(block));
+                } else {
+                    throw new JsonException(this.getClass().getSimpleName() + ": block inside condtions must be an Object");
+                }
+            }
+        }
     }
 }
