@@ -2,6 +2,7 @@ package src.blaze.engine;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import src.blaze.command.Command;
 import src.blaze.container.Container;
 import src.blaze.entity.Entity;
 import src.blaze.entity.exception.EntityException;
@@ -13,10 +14,12 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
-public class Engine {
+public abstract class Engine {
 
     private Container container = new Container();
     private EntityFactory<?> factory;
+
+    public abstract void executeCommand(Command cmd);
 
     public <T extends Object> void set(String path, T value) {
         container.set(path, value);
