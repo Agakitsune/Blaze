@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 public class SubcommandBlock extends Block {
 
-    private Boolean loop = false;
     private String subcommandName;
     private ArrayList<Block> body = new ArrayList<>();
 
@@ -87,7 +86,7 @@ public class SubcommandBlock extends Block {
                     block = elt.getAsJsonObject();
                     this.body.add(Block.constructFromJson(block));
                 } else {
-                    throw new JsonException(this.getClass().getSimpleName() + ": block inside body must be a Object");
+                    throw new JsonException(this.getClass().getSimpleName() + ": block inside body must be an Object");
                 }
             }
         } else {
@@ -97,11 +96,6 @@ public class SubcommandBlock extends Block {
 
     public SubcommandBlock addBlock(Block block) {
         this.body.add(block);
-        return this;
-    }
-
-    public SubcommandBlock setLoop(boolean loop) {
-        this.loop = loop;
         return this;
     }
 }

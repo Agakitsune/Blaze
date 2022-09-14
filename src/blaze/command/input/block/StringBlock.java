@@ -12,7 +12,7 @@ public class StringBlock extends LiteralBlock {
         Token token = input.getToken(shift);
         if (token.type().equals("String")) {
             LiteralNode node = new LiteralNode(token.position(), token.position() + token.value().length(), token.value());
-            return BlockResponse.makeSimpleResponse(BlockResponse.SUCCES_CODE, "", shift + 1, node.getData());
+            return BlockResponse.makeSimpleResponse(BlockResponse.SUCCES_CODE, "", shift + 1, node.getData(), this.loop);
         }
         return new BlockResponse(BlockResponse.ERROR_CODE, "Unexpected " + token.type() + " at " + token.position() + ": expected a String", null);
     }
@@ -20,5 +20,11 @@ public class StringBlock extends LiteralBlock {
     @Override
     public void fromJson(JsonObject object) {
 
+    }
+
+    @Override
+    public Block setLoop(boolean loop) {
+        this.loop = loop;
+        return this;
     }
 }

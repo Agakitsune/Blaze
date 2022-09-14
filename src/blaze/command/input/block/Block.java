@@ -4,8 +4,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import src.blaze.command.exception.CommandException;
 import src.blaze.command.input.Input;
-import src.blaze.command.input.node.CommandNode;
-import src.blaze.command.input.node.Node;
 import src.blaze.utils.JsonHelper;
 import src.blaze.utils.exception.JsonException;
 
@@ -13,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public abstract class Block {
 
-    private Block next;
+    protected Boolean loop = false;
 
     public Block() {
 
@@ -21,13 +19,9 @@ public abstract class Block {
 
     public abstract BlockResponse execute(Input input, int shift) throws CommandException;
 
-    public Block setNext(Block next) {
-        this.next = next;
+    public Block setLoop(boolean loop) {
+        this.loop = loop;
         return this;
-    }
-
-    public Block getNext() {
-        return next;
     }
 
     public abstract void fromJson(JsonObject object);
@@ -53,7 +47,7 @@ public abstract class Block {
                 throw new JsonException("Block: name must be a String");
             }
             if (packageName == null) {
-                className = LiteralBlock.class.getPackageName() + "." + typeName;
+                className = Block.class.getPackageName() + "." + typeName;
             } else {
                 if (JsonHelper.checkElement(packageName, JsonHelper.JSONType.STRING)) {
                     className = packageName.getAsString() + "." + typeName;
@@ -66,10 +60,13 @@ public abstract class Block {
         }
         try {
             Class<?> literalClass = Class.forName(className);
-            if (LiteralBlock.class.isAssignableFrom(literalClass))
-                return (Block) literalClass.getConstructor().newInstance();
+            if (Block.class.isAssignableFrom(literalClass)) {
+                Block block = (Block) literalClass.getConstructor().newInstance();
+                block.fromJson(object);
+                return block;
+            }
             else
-                throw new LiteralException(className + " is not a subclass of LiteralBlock");
+                throw new LiteralException(className + " is not a subclass of Block");
         } catch (InstantiationException e) {
             throw new LiteralException("Failed to instantiate Block of class " + typeName);
         } catch (IllegalAccessException e) {

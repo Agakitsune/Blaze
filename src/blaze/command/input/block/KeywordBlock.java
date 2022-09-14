@@ -22,7 +22,7 @@ public class KeywordBlock extends Block {
         Token token = input.getToken(shift);
         if (token.value().equals(keyword)) {
             KeywordNode node = new KeywordNode(token.position(), token.position() + token.value().length(), token.value());
-            return BlockResponse.makeSimpleResponse(BlockResponse.SUCCES_CODE, "", shift + 1, node.getData());
+            return BlockResponse.makeSimpleResponse(BlockResponse.SUCCES_CODE, "", shift + 1, node.getData(), this.loop);
         }
         return new BlockResponse(BlockResponse.ERROR_CODE, "Unknown keyword '" + token.value() + "' at " + token.position(), null);
     }

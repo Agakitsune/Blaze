@@ -2,7 +2,6 @@ package src.blaze.command.input.block;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import src.blaze.command.input.node.Node;
 
 public class BlockResponse {
 

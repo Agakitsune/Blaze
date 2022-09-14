@@ -102,6 +102,12 @@ public class LiteralBlock extends Block {
             throw new LiteralException(blockName + ": No Block found with that name");
         }
     }
+
+    @Override
+    public Block setLoop(boolean loop) {
+        this.block.setLoop(loop);
+        return this;
+    }
 }
 
 class LiteralException extends RuntimeException {

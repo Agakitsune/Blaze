@@ -8,7 +8,6 @@ import src.blaze.command.input.Token;
 import src.blaze.command.input.block.Block;
 import src.blaze.command.input.block.BlockResponse;
 import src.blaze.command.input.node.CommandNode;
-import src.blaze.command.input.node.Node;
 
 import java.util.ArrayList;
 

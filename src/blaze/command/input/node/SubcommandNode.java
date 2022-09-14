@@ -2,7 +2,6 @@ package src.blaze.command.input.node;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import src.blaze.command.input.Node;
 
 public class SubcommandNode extends Node {
 
